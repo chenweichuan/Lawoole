@@ -1,6 +1,6 @@
 {
     "name": "Lawoole",
-    "description": "Optimize performance of Laravel by Swoole.",
+    "description": "Optimize the performance of Laravel by Swoole.",
     "type": "project",
     "require": {
         "php": ">=5.5.9",
