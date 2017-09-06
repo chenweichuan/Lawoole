@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Database;
+namespace Lawoole\Database;
 
-use App\Database\Query\Monitor as QueryMonitor;
+use Lawoole\Database\Query\Monitor as QueryMonitor;
 use Illuminate\Database\DatabaseServiceProvider as ServiceProvider;
 
 class DatabaseServiceProvider extends ServiceProvider

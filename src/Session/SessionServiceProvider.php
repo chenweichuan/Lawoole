@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Session;
+namespace Lawoole\Session;
 
 use Session;
 use Illuminate\Session\SessionServiceProvider as ServiceProvider;
@@ -18,6 +18,6 @@ class SessionServiceProvider extends ServiceProvider
 
         $this->registerSessionDriver();
 
-        $this->app->singleton('App\Session\Middleware\StartSession');
+        $this->app->singleton('Lawoole\Session\Middleware\StartSession');
     }
 }

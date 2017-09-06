@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Session\Middleware;
+namespace Lawoole\Session\Middleware;
 
 use Closure;
 use Carbon\Carbon;
@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Illuminate\Session\CookieSessionHandler;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Session\Middleware\StartSession as Session;
-use App\Session\OpenSessionHandler;
 
 class StartSession extends Session
 {
@@ -48,8 +47,6 @@ class StartSession extends Session
     {
         // Flush worker session data.
         $this->manager->flush();
-
-        $this->detectDomain($request);
 
         $this->sessionHandled = true;
 
@@ -98,114 +95,6 @@ class StartSession extends Session
 
         // Flush worker session data.
         $this->manager->flush();
-    }
-
-    /**
-     * Detect the session domain from the given request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    protected function detectDomain(Request $request)
-    {
-        $host = $request->getHost();
-
-        $config = $this->manager->getSessionConfig();
-
-        // Default session domain is request host
-        $domain = $host;
-
-        // Detect specific session domain
-        $domains = $config['domains'];
-        $host_segments = explode('.', $host);
-        for ($i = 0, $l = count($host_segments); $i < $l - 1; $i ++) {
-            $_domain = implode('.', array_slice($host_segments, $i, $l - $i)); 
-            if (in_array($_domain, $domains)) {
-                $domain = $_domain;
-                break;
-            }
-        }
-
-        $this->domain = $domain;
-    }
-
-    /**
-     * Start the session for the given request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Session\SessionInterface
-     */
-    protected function startSession(Request $request)
-    {
-        $session = $this->getSession($request);
-
-        if ($session->getHandler() instanceof OpenSessionHandler) {
-            $session->getHandler()->setRequest($request);
-            $session->getHandler()->setDomain($this->domain);
-        } else {
-            $session->setRequestOnHandler($request);
-        }
-
-        $session->start();
-
-        return $session;
-    }
-
-    /**
-     * Get the session implementation from the manager.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Session\SessionInterface
-     */
-    public function getSession(Request $request)
-    {
-        $session = $this->manager->driver();
-
-        $config = $this->manager->getSessionConfig();
-
-        $scheme = $request->getScheme();
-
-        if ($session->getHandler() instanceof OpenSessionHandler) {
-            $channel = $request->query->get('utm_source');
-            $app_id  = (strpos($channel, 'open-') === 0) ? (int) str_replace('open-', '', $channel) : null;
-            $session->setName(sprintf(
-                $config['cookie'] . '%u',
-                crc32($scheme . '-' . $this->domain . ($app_id ? "-app:{$app_id}" : ''))
-            ));
-        } else {
-            $session->setName(sprintf($config['cookie'] . '%u', crc32($scheme . '-' . $this->domain)));
-        }
-
-        $session->setId($request->cookies->get($session->getName()));
-
-        return $session;
-    }
-
-    /**
-     * Add the session cookie to the application response.
-     *
-     * @param  \Symfony\Component\HttpFoundation\Response  $response
-     * @param  \Illuminate\Session\SessionInterface  $session
-     * @return void
-     */
-    protected function addCookieToResponse(Response $response, SessionInterface $session)
-    {
-        if ($this->usingCookieSessions()) {
-            $this->saveSession();
-        }
-
-        if ($this->sessionIsPersistent($config = $this->manager->getSessionConfig())) {
-            if ($session->getHandler() instanceof OpenSessionHandler) {
-                $request = $session->getHandler()->getRequest();
-                $secure  = $request->secure() ?: Arr::get($config, 'secure', false);
-            } else {
-                $secure  = Arr::get($config, 'secure', false);
-            }
-            $response->headers->setCookie(new Cookie(
-                $session->getName(), $session->getId(), $this->getCookieExpirationDate(),
-                $config['path'], $this->domain, $secure
-            ));
-        }
     }
 
     protected function saveSession()

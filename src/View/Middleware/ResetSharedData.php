@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Middleware;
+namespace Lawoole\View\Middleware;
 
 use Closure;
 use Illuminate\Contracts\View\Factory as ViewFactory;

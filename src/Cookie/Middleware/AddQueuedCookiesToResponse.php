@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Cookie\Middleware;
+namespace Lawoole\Cookie\Middleware;
 
 use Closure;
 
