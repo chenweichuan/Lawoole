@@ -5,9 +5,8 @@ require __DIR__.'/../bootstrap/autoload.php';
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
 $app->bootstrapWith([
-    'Illuminate\Foundation\Bootstrap\DetectEnvironment',
+    'Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables',
     'Illuminate\Foundation\Bootstrap\LoadConfiguration',
-    'Illuminate\Foundation\Bootstrap\ConfigureLogging',
     'Illuminate\Foundation\Bootstrap\HandleExceptions',
     'Illuminate\Foundation\Bootstrap\RegisterFacades',
     'Illuminate\Foundation\Bootstrap\SetRequestForConsole',

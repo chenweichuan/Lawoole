@@ -3,8 +3,14 @@
     "description": "Optimize the performance of Laravel by Swoole.",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "laravel/framework": "~5.1"
+        "php": ">=5.6.4",
+        "laravel/framework": "5.4.*",
+        "laravel/tinker": "~1.0"
+    },
+    "require-dev": {
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "~5.7"
     },
     "autoload": {
         "psr-4": {
